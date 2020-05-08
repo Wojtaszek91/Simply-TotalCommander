@@ -1,0 +1,197 @@
+﻿<UserControl x:Class="SimplyTotalCommander.WindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SimplyTotalCommander"
+             mc:Ignorable="d" 
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             Loaded="Window_Loaded"
+             >
+    
+    <UserControl.Background>
+        <ImageBrush ImageSource="Images/mainBackground.png"/>
+    </UserControl.Background>
+    <Viewbox Margin="15" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <DockPanel>
+
+            <!-- *** Showing direcroies tree *** -->
+            <ListView x:Name="ListOfDirectory"
+                      DockPanel.Dock="Left"
+                      Foreground="White"
+                      FontFamily="{StaticResource RexBold}"
+                      Height="550"
+                      SelectionChanged="DataGridOfDirectories_SelectionChanged" RenderTransformOrigin="0.5,0.5">
+                <ListView.Background>
+                    <ImageBrush ImageSource="Images/background.png"/>
+                </ListView.Background>
+                <ListView.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform Y="-51"/>
+                    </TransformGroup>
+                </ListView.RenderTransform>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItem_PreviewMouseLeftButtonDown" />
+                        <Setter Property="ToolTip">
+                            <Setter.Value>
+                                <TextBlock Text="Double Click folder to open"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <Image Source="Images/folder.png" Width="15" Height="15" Margin="0,0,5,0"></Image>
+                            <TextBlock Text="{Binding}"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <!-- *** Showing table with details of files from list *** -->
+            <DataGrid x:Name="DataGridOfFiles"                  
+                  IsReadOnly="true"
+                  DockPanel.Dock="Top"
+                  AutoGenerateColumns="False" 
+                  SelectionUnit="FullRow"
+                  CanUserResizeColumns="False"
+                  CanUserResizeRows="False"
+                  SelectionChanged="DataGridOfFiles_SelectionChanged"
+                  GridLinesVisibility="None"
+                  Width="460"
+                  Height="550"
+                  MouseDown="DataGridOfFiles_MouseDown" MouseDoubleClick="DataGridOfFiles_MouseDoubleClick">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="25">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding imageIcon}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <!-- Displayed Columns -->
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="File name" Binding="{Binding fileName}" Width="220"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Extension" Binding="{Binding extension}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="File size" Binding="{Binding length}"></DataGridTextColumn>
+                </DataGrid.Columns>
+                <!-- Change style while focused -->
+                <DataGrid.Style>
+                    <Style TargetType="DataGrid">
+                        <Style.Triggers>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                <Setter Property="AlternatingRowBackground" Value="DarkGray" />
+                                <Setter Property="BorderThickness" Value="3" />
+                            </Trigger>
+                            <Trigger Property="TextBlock.TextAlignment" Value="Center" />
+                            <Trigger Property="IsKeyboardFocusWithin" Value="false">
+                                <Setter Property="AlternatingRowBackground" Value="Gainsboro"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Style>
+                <!-- Commands to execute on right click menu -->
+                <DataGrid.CommandBindings>
+                    <CommandBinding Command="Open" Executed="Open_Executed" />
+                    <CommandBinding Command="Copy" Executed="Copy_Executed" />
+                    <CommandBinding Command="Paste" CanExecute="Paste_CanExecuted" Executed="Paste_Executed" />
+                    <CommandBinding Command="Cut" Executed="Cut_Executed" />
+                    <CommandBinding Command="Delete" Executed="Delete_Executed" />
+                    <CommandBinding Command="{x:Static local:CustomCommands.ZipIt}" Executed="zipFile_Executed" />
+                    <CommandBinding Command="{x:Static local:CustomCommands.UnZipIt}" Executed="unZipFile_Executed" />
+                    <CommandBinding Command="{x:Static local:CustomCommands.NewFile}" Executed="NewFile_Executed" />
+                    <CommandBinding Command="Properties" Executed="openProperties_Executed" />
+                </DataGrid.CommandBindings>
+                <!-- Short cuts in right click menu -->
+                <DataGrid.InputBindings>
+                    <KeyBinding Key="C" Modifiers="Control" Command="Copy" />
+                    <KeyBinding Key="V" Modifiers="Control" Command="Paste" />
+                    <KeyBinding Key="X" Modifiers="Control" Command="Cut" />
+                    <KeyBinding Key="Delete" Command="Delete" />
+                </DataGrid.InputBindings>
+                <DataGrid.ContextMenu>
+                    <!-- Commands to show in right click menu -->
+                    <ContextMenu>
+                        <MenuItem Header="_Open" FontWeight="Bold" Command="Open">
+                            <MenuItem.Icon>
+                                <Image Source="Images/open.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="_Copy" Command="Copy"  InputGestureText="Ctrl + C" >
+                            <MenuItem.Icon>
+                                <Image Source="Images/copy.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Paste" Command="Paste" InputGestureText="Ctrl + V" >
+                            <MenuItem.Icon>
+                                <Image Source="Images/paste.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Cut" Command="Cut" InputGestureText="Ctrl + X" >
+                            <MenuItem.Icon>
+                                <Image Source="Images/cut.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="_Delete" Command="Delete" InputGestureText="Del"  >
+                            <MenuItem.Icon>
+                                <Image Source="Images/delete.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_New File" Command="{x:Static local:CustomCommands.NewFile}" >
+                            <MenuItem.Icon>
+                                <Image Source="Images/new.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="_Zip to..." Command="{x:Static local:CustomCommands.ZipIt}" >
+                            <MenuItem.Icon>
+                                <Image Source="Images/zip.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="UnZip" Command="{x:Static local:CustomCommands.unZipIt}">
+                            <MenuItem.Icon>
+                                <Image Source="Images/unzip.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Properties" Command="Properties" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+            <!-- *** Select or search for a file in currnet directory. *** -->
+            <StackPanel Width="415" Margin="10" RenderTransformOrigin="0.5,0.5">
+                <StackPanel.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform X="-155"/>
+                    </TransformGroup>
+                </StackPanel.RenderTransform>
+                <TextBlock HorizontalAlignment="left" Text="Choose file :"/>
+                <ComboBox SelectionChanged="Button_Click"
+                    Height="25"
+                    VerticalAlignment="top"
+                    HorizontalAlignment="Stretch"
+                    x:Name="SeachBox" 
+                    IsEditable="True" 
+                    IsTextSearchEnabled="True" RenderTransformOrigin="0.5,0.5">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel >
+                                <TextBlock Text="{Binding Path=fileName}" Background="#00185E8D"/>
+                                <Rectangle Fill="{Binding Path=fileName}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <!-- *** Search new directory path by string ***-->
+                <TextBlock HorizontalAlignment="left" Text="Directory Path" />
+                <TextBox  Height="25" x:Name="NewPath" IsReadOnly="True"/>
+            </StackPanel>
+        </DockPanel>
+    </Viewbox>
+</UserControl>

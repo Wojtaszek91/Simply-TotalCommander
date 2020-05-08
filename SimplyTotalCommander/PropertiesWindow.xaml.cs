@@ -1,22 +1,31 @@
-﻿
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using ClassLibrary1;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 
 namespace SimplyTotalCommander
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Logika interakcji dla klasy PropertiesWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class PropertiesWindow : Window
     {
-
-        public MainWindow()
+        public PropertiesWindow()
         {
             InitializeComponent();
             SourceInitialized += new EventHandler(MainWindow_NoResizeWindowOnDoubleClick);
         }
-
         void MainWindow_NoResizeWindowOnDoubleClick(object sender, EventArgs e)
         {
             System.Windows.Interop.HwndSource source = System.Windows.Interop.HwndSource.FromHwnd(new System.Windows.Interop.WindowInteropHelper(this).Handle);
@@ -33,16 +42,6 @@ namespace SimplyTotalCommander
             }
 
             return IntPtr.Zero;
-        }
-
-        private void WindowControl_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-        
-        private void WindowControl_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            
         }
 
     }

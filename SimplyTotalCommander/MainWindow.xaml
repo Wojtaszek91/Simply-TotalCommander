@@ -5,8 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimplyTotalCommander"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Hutnik Commander"
+        Height="850"
+        Width="800"
+        Foreground="GhostWhite"
+        WindowStyle="ToolWindow"
+        WindowState="Maximized"
+        >
+
+    
+    
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="50*"/>
+        </Grid.ColumnDefinitions>
+
+        <local:WindowControl
+            x:Name="LeftWindow"
+            Grid.Column="0" 
+            Loaded="WindowControl_Loaded" 
+            MouseRightButtonUp="WindowControl_MouseRightButtonUp"
+            />
+        <local:WindowControl
+            x:Name="RightWindow"
+
+            Grid.Column="2"/>
     </Grid>
+
+      
 </Window>
